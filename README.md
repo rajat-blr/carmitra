@@ -1,65 +1,111 @@
-# Carmitra
+# CarMitra
 
-Carmitra is a web application designed to assist users in gathering all the necessary information when buying a new car. The platform allows users to view car reviews, post their own reviews, and find top-rated dealerships based on their city and preferred car brands.
+CarMitra is a car information platform that helps users find and review cars and dealerships.
+
+## Prerequisites
+
+- Node.js >= 16.0.0
+- MongoDB installed and running locally
+- Git
+
+## Project Structure
+
+The project is divided into two main parts:
+- `client/`: React frontend built with Vite, TypeScript, and TailwindCSS
+- `server/`: Express backend with TypeScript and MongoDB
+
+## Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone [repository-url]
+cd carmitra
+```
+
+### 2. Environment Setup
+
+Create a `.env` file in the server directory:
+
+```bash
+# server/.env
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/carmitra
+```
+
+### 3. Installing Dependencies
+
+Install dependencies for both client and server:
+
+```bash
+# Install client dependencies
+cd client
+npm install
+
+# Install server dependencies
+cd ../server
+npm install
+```
+
+### 4. Running the Application
+
+#### Development Mode
+
+Start the backend server:
+```bash
+cd server
+npm run dev
+```
+
+In a new terminal, start the frontend development server:
+```bash
+cd client
+npm run dev
+```
+
+The frontend will be available at `http://localhost:5173`
+The backend will be available at `http://localhost:3000`
+
+#### Production Build
+
+To create production builds:
+
+For the client:
+```bash
+cd client
+npm run build
+```
+
+For the server:
+```bash
+cd server
+npm run build
+```
 
 ## Features
 
-- **Car Reviews**: Users can browse through reviews of various cars, helping them make informed decisions.
-- **Post Reviews**: Users have the option to submit their own reviews for cars they own or have experience with.
-- **Dealership Listings**: The application provides a list of top-rated dealerships in the user's city, categorized by car brand.
+- Car reviews and ratings
+- Dealership information and reviews
+- Submit new car reviews
+- Browse dealerships
 
 ## Tech Stack
 
-- **Frontend**: React
-- **Backend**: Express
-- **Styling**: Tailwind CSS
+### Frontend
+- React 18
+- TypeScript
+- Vite
+- TailwindCSS
+- React Router DOM
+- Axios
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js and npm installed on your machine.
-
-### Installation
-
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd carmitra
-   ```
-
-2. Navigate to the client directory and install dependencies:
-   ```
-   cd client
-   npm install
-   ```
-
-3. Navigate to the server directory and install dependencies:
-   ```
-   cd ../server
-   npm install
-   ```
-
-### Running the Application
-
-1. Start the backend server:
-   ```
-   cd server
-   npm start
-   ```
-
-2. In a new terminal, start the frontend application:
-   ```
-   cd client
-   npm start
-   ```
-
-The application should now be running on `http://localhost:3000`.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a pull request or open an issue for any suggestions or improvements.
+### Backend
+- Node.js
+- Express
+- TypeScript
+- MongoDB with Mongoose
+- CORS enabled
 
 ## License
 
-This project is licensed under the MIT License.
+MIT
