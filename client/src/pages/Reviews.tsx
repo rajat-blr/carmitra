@@ -8,6 +8,10 @@ interface Review {
     carModel: string;
     rating: number;
     comment: string;
+    dealershipName: string;
+    city: string;
+    purchaseDate: string;
+    salesExperienceRating: number;
     createdAt: string;
 }
 

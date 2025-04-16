@@ -1,10 +1,14 @@
 import React from 'react';
 
 interface Review {
-    _id?: string; // MongoDB ObjectId
+    _id?: string;
     carModel: string;
     rating: number;
     comment: string;
+    dealershipName: string;
+    city: string;
+    purchaseDate: string;
+    salesExperienceRating: number;
     createdAt: string;
 }
 
@@ -13,14 +17,16 @@ interface CarReviewProps {
 }
 
 const CarReview: React.FC<CarReviewProps> = ({ review }) => {
-    const starRating = Array(5).fill(0).map((_, index) => (
-        <span 
-            key={index}
-            className={`text-xl ${index < review.rating ? 'text-yellow-400' : 'text-gray-300'}`}
-        >
-            ★
-        </span>
-    ));
+    const renderStars = (rating: number) => (
+        Array(5).fill(0).map((_, index) => (
+            <span 
+                key={index}
+                className={`text-xl ${index < rating ? 'text-yellow-400' : 'text-gray-300'}`}
+            >
+                ★
+            </span>
+        ))
+    );
 
     const formattedDate = new Date(review.createdAt).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -34,9 +40,32 @@ const CarReview: React.FC<CarReviewProps> = ({ review }) => {
                 <h3 className="text-xl font-semibold text-gray-800">{review.carModel}</h3>
                 <div className="flex items-center">
                     <div className="flex mr-2">
-                        {starRating}
+                        {renderStars(review.rating)}
                     </div>
                     <span className="text-sm text-gray-600">{review.rating}/5</span>
+                </div>
+            </div>
+            
+            <div className="mb-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 mb-4">
+                    <div>
+                        <span className="font-medium">Dealership:</span> {review.dealershipName}
+                    </div>
+                    <div>
+                        <span className="font-medium">City:</span> {review.city}
+                    </div>
+                    <div>
+                        <span className="font-medium">Purchase Date:</span> {review.purchaseDate}
+                    </div>
+                    <div>
+                        <span className="font-medium">Sales Experience:</span>
+                        <div className="flex items-center">
+                            <div className="flex mr-1">
+                                {renderStars(review.salesExperienceRating)}
+                            </div>
+                            <span className="text-sm">({review.salesExperienceRating}/5)</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             
