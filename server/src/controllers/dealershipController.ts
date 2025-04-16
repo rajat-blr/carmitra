@@ -1,46 +1,63 @@
 import { Request, Response } from 'express';
-import type Dealership from '../models/Dealership';
+import Car from '../models/Car';
+import type { PipelineStage } from 'mongoose';
 
 class DealershipController {
-    private dealerships: Dealership[] = [
-        {
-            id: 1,
-            name: "AutoMax Honda",
-            location: "Mumbai",
-            rating: 4.5,
-            brand: "Honda"
-        },
-        {
-            id: 2,
-            name: "Toyota City",
-            location: "Delhi",
-            rating: 4.8,
-            brand: "Toyota"
-        },
-        {
-            id: 3,
-            name: "Hyundai Plus",
-            location: "Bangalore",
-            rating: 4.3,
-            brand: "Hyundai"
-        }
-    ];
-    private nextId = 4;
-
     async getDealerships(req: Request, res: Response) {
         try {
             const { city, brand } = req.query;
+            
+            // Create base aggregation pipeline
+            const pipeline: PipelineStage[] = [
+                {
+                    $group: {
+                        _id: {
+                            dealershipName: '$dealershipName',
+                            city: '$city'
+                        },
+                        avgSalesRating: { $avg: '$salesExperienceRating' },
+                        avgRating: { $avg: '$rating' },
+                        reviewCount: { $sum: 1 },
+                        brands: { $addToSet: { $arrayElemAt: [{ $split: ['$carModel', ' '] }, 0] } }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        name: '$_id.dealershipName',
+                        location: '$_id.city',
+                        salesRating: { $round: ['$avgSalesRating', 1] },
+                        rating: { $round: ['$avgRating', 1] },
+                        reviewCount: 1,
+                        brands: 1
+                    }
+                },
+                {
+                    $sort: { salesRating: -1 }
+                }
+            ];
 
-            if (!city || !brand) {
-                return res.status(400).json({ message: 'City and brand are required' });
+            // Add city filter if provided
+            if (typeof city === 'string' && city.trim()) {
+                pipeline.unshift({
+                    $match: {
+                        city: new RegExp(`^${city.trim()}$`, 'i')
+                    }
+                });
             }
 
-            const filteredDealerships = this.dealerships.filter(d => 
-                d.location.toLowerCase() === (city as string).toLowerCase() &&
-                d.brand.toLowerCase() === (brand as string).toLowerCase()
-            );
+            // Add brand filter if provided
+            if (typeof brand === 'string' && brand.trim()) {
+                pipeline.push({
+                    $match: {
+                        brands: new RegExp(brand.trim(), 'i')
+                    }
+                });
+            }
 
-            res.status(200).json(filteredDealerships);
+            const dealerships = await Car.aggregate(pipeline);
+
+            res.status(200).json(dealerships);
         } catch (error) {
             console.error('Error fetching dealerships:', error);
             res.status(500).json({ message: 'Error fetching dealerships' });
@@ -59,15 +76,15 @@ class DealershipController {
                 return res.status(400).json({ message: 'Rating must be between 1 and 5' });
             }
 
-            const newDealership: Dealership = {
-                id: this.nextId++,
+            const newDealership = {
+                id: Math.random(), // Placeholder for ID generation
                 name,
                 location,
                 rating,
                 brand
             };
 
-            this.dealerships.push(newDealership);
+            // Placeholder for adding dealership logic
             res.status(201).json(newDealership);
         } catch (error) {
             console.error('Error adding dealership:', error);

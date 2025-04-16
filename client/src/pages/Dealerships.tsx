@@ -6,7 +6,9 @@ interface Dealership {
     name: string;
     location: string;
     rating: number;
-    brand: string;
+    salesRating: number;
+    reviewCount: number;
+    brands: string[];
 }
 
 const Dealerships: React.FC = () => {
@@ -28,8 +30,8 @@ const Dealerships: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!formData.city || !formData.brand) {
-            setError('Please fill in both city and brand fields');
+        if (!formData.city) {
+            setError('Please enter a city');
             return;
         }
 
@@ -39,7 +41,7 @@ const Dealerships: React.FC = () => {
             const response = await axios.get<Dealership[]>('/api/dealerships', {
                 params: {
                     city: formData.city,
-                    brand: formData.brand
+                    brand: formData.brand || undefined
                 }
             });
             setDealerships(response.data);
@@ -53,9 +55,9 @@ const Dealerships: React.FC = () => {
 
     const renderStars = (rating: number) => {
         return Array(5).fill(0).map((_, index) => (
-            <span 
+            <span
                 key={index}
-                className={`text-lg ${index < rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                className={`text-lg ${index < Math.round(rating) ? 'text-yellow-400' : 'text-gray-300'}`}
             >
                 ★
             </span>
@@ -65,7 +67,7 @@ const Dealerships: React.FC = () => {
     return (
         <div className="max-w-4xl mx-auto">
             <h1 className="text-3xl font-bold text-gray-800 mb-8">Find Top Rated Dealerships</h1>
-            
+
             <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -84,24 +86,23 @@ const Dealerships: React.FC = () => {
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Car Brand
+                            Car Brand (Optional)
                         </label>
                         <input
                             type="text"
                             name="brand"
                             value={formData.brand}
                             onChange={handleChange}
-                            placeholder="Enter car brand"
+                            placeholder="Filter by brand"
                             className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            required
                         />
                     </div>
                 </div>
-                
+
                 {error && (
                     <p className="text-red-500 text-sm mt-4">{error}</p>
                 )}
-                
+
                 <button
                     type="submit"
                     disabled={loading}
@@ -120,27 +121,45 @@ const Dealerships: React.FC = () => {
                 <div className="grid gap-6">
                     {dealerships.map((dealership) => (
                         <div key={dealership.id} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                            <div className="flex justify-between items-start">
-                                <div>
+                            <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+                                <div className="flex-1">
                                     <h3 className="text-xl font-semibold text-gray-800">{dealership.name}</h3>
                                     <p className="text-gray-600 mt-1">{dealership.location}</p>
-                                    <p className="text-gray-600 mt-1">Brand: {dealership.brand}</p>
+                                    <p className="text-gray-600 mt-1">Brands: {dealership.brands.join(', ')}</p>
+                                    <p className="text-gray-600 mt-1">Reviews: {dealership.reviewCount}</p>
                                 </div>
-                                <div className="flex flex-col items-end">
-                                    <div className="flex">
-                                        {renderStars(dealership.rating)}
+                                <div className="flex flex-col items-end space-y-2">
+                                    <div>
+                                        <div className="text-sm font-medium text-gray-700 mb-1">Sales Experience</div>
+                                        <div className="flex items-center">
+                                            <div className="flex mr-2">
+                                                {renderStars(dealership.salesRating)}
+                                            </div>
+                                            <span className="text-sm text-gray-600">
+                                                {dealership.salesRating.toFixed(1)}/5
+                                            </span>
+                                        </div>
                                     </div>
-                                    <span className="text-sm text-gray-600 mt-1">
-                                        {dealership.rating}/5
-                                    </span>
+                                    <div>
+                                        <div className="text-sm font-medium text-gray-700 mb-1">Overall Rating</div>
+                                        <div className="flex items-center">
+                                            <div className="flex mr-2">
+                                                {renderStars(dealership.rating)}
+                                            </div>
+                                            <span className="text-sm text-gray-600">
+                                                {dealership.rating.toFixed(1)}/5
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
-            ) : formData.city && formData.brand && !loading && (
+            ) : formData.city && !loading && (
                 <div className="text-center py-8 text-gray-600">
-                    No dealerships found for {formData.brand} in {formData.city}.
+                    No dealerships found in {formData.city}
+                    {formData.brand ? ` for ${formData.brand}` : ''}.
                 </div>
             )}
         </div>
