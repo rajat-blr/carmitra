@@ -8,6 +8,10 @@ interface ReviewSubmission {
     year: string;
     rating: number;
     comment: string;
+    dealershipName: string;
+    city: string;
+    purchaseDate: string;
+    salesExperienceRating: number;
 }
 
 const SubmitReview: React.FC = () => {
@@ -19,7 +23,11 @@ const SubmitReview: React.FC = () => {
         model: '',
         year: '',
         rating: 5,
-        comment: ''
+        comment: '',
+        dealershipName: '',
+        city: '',
+        purchaseDate: '',
+        salesExperienceRating: 5
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -36,83 +44,156 @@ const SubmitReview: React.FC = () => {
         setIsSubmitting(true);
         
         try {
+            // Validate purchase date format (MM/YYYY)
+            if (!/^\d{2}\/\d{4}$/.test(formData.purchaseDate)) {
+                throw new Error('Purchase date must be in MM/YYYY format');
+            }
+
             await axios.post('/api/cars/reviews', {
                 carModel: `${formData.make} ${formData.model} ${formData.year}`,
                 rating: Number(formData.rating),
-                comment: formData.comment
+                comment: formData.comment,
+                dealershipName: formData.dealershipName,
+                city: formData.city,
+                purchaseDate: formData.purchaseDate,
+                salesExperienceRating: Number(formData.salesExperienceRating)
             });
             
-            // Redirect to reviews page after successful submission
             navigate('/reviews');
         } catch (error) {
             console.error('Error submitting review:', error);
-            setError('Failed to submit review. Please try again.');
+            setError(error instanceof Error ? error.message : 'Failed to submit review. Please try again.');
         } finally {
             setIsSubmitting(false);
         }
     };
 
+    const renderStars = (name: 'rating' | 'salesExperienceRating', value: number) => {
+        return (
+            <div className="flex space-x-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                        key={star}
+                        type="button"
+                        onClick={() => handleChange({
+                            target: { name, value: star.toString() }
+                        } as React.ChangeEvent<HTMLInputElement>)}
+                        className={`text-2xl ${
+                            star <= Number(formData[name]) ? 'text-yellow-400' : 'text-gray-300'
+                        }`}
+                    >
+                        ★
+                    </button>
+                ))}
+            </div>
+        );
+    };
+
     return (
-        <div className="max-w-md mx-auto mt-10 p-6">
+        <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
             <h1 className="text-2xl font-bold mb-6">Submit a Car Review</h1>
             {error && (
                 <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md mb-6">
                     {error}
                 </div>
             )}
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label className="block text-sm font-medium mb-1">Make</label>
-                    <input
-                        type="text"
-                        name="make"
-                        value={formData.make}
-                        onChange={handleChange}
-                        className="w-full border border-gray-300 rounded-md p-2"
-                        required
-                        disabled={isSubmitting}
-                    />
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Make</label>
+                        <input
+                            type="text"
+                            name="make"
+                            value={formData.make}
+                            onChange={handleChange}
+                            className="w-full border border-gray-300 rounded-md p-2"
+                            required
+                            disabled={isSubmitting}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Model</label>
+                        <input
+                            type="text"
+                            name="model"
+                            value={formData.model}
+                            onChange={handleChange}
+                            className="w-full border border-gray-300 rounded-md p-2"
+                            required
+                            disabled={isSubmitting}
+                        />
+                    </div>
                 </div>
-                <div>
-                    <label className="block text-sm font-medium mb-1">Model</label>
-                    <input
-                        type="text"
-                        name="model"
-                        value={formData.model}
-                        onChange={handleChange}
-                        className="w-full border border-gray-300 rounded-md p-2"
-                        required
-                        disabled={isSubmitting}
-                    />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Year</label>
+                        <input
+                            type="number"
+                            name="year"
+                            value={formData.year}
+                            onChange={handleChange}
+                            className="w-full border border-gray-300 rounded-md p-2"
+                            min="1900"
+                            max={new Date().getFullYear() + 1}
+                            required
+                            disabled={isSubmitting}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Dealership Name</label>
+                        <input
+                            type="text"
+                            name="dealershipName"
+                            value={formData.dealershipName}
+                            onChange={handleChange}
+                            className="w-full border border-gray-300 rounded-md p-2"
+                            required
+                            disabled={isSubmitting}
+                        />
+                    </div>
                 </div>
-                <div>
-                    <label className="block text-sm font-medium mb-1">Year</label>
-                    <input
-                        type="number"
-                        name="year"
-                        value={formData.year}
-                        onChange={handleChange}
-                        className="w-full border border-gray-300 rounded-md p-2"
-                        min="1900"
-                        max={new Date().getFullYear() + 1}
-                        required
-                        disabled={isSubmitting}
-                    />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label className="block text-sm font-medium mb-1">City</label>
+                        <input
+                            type="text"
+                            name="city"
+                            value={formData.city}
+                            onChange={handleChange}
+                            className="w-full border border-gray-300 rounded-md p-2"
+                            required
+                            disabled={isSubmitting}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Purchase Date (MM/YYYY)</label>
+                        <input
+                            type="text"
+                            name="purchaseDate"
+                            value={formData.purchaseDate}
+                            onChange={handleChange}
+                            placeholder="MM/YYYY"
+                            pattern="\d{2}/\d{4}"
+                            className="w-full border border-gray-300 rounded-md p-2"
+                            required
+                            disabled={isSubmitting}
+                        />
+                    </div>
                 </div>
-                <div>
-                    <label className="block text-sm font-medium mb-1">Rating</label>
-                    <input
-                        type="number"
-                        name="rating"
-                        value={formData.rating}
-                        onChange={handleChange}
-                        className="w-full border border-gray-300 rounded-md p-2"
-                        min="1"
-                        max="5"
-                        required
-                        disabled={isSubmitting}
-                    />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Overall Rating</label>
+                        {renderStars('rating', formData.rating)}
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Sales Experience Rating</label>
+                        {renderStars('salesExperienceRating', formData.salesExperienceRating)}
+                    </div>
                 </div>
+
                 <div>
                     <label className="block text-sm font-medium mb-1">Review</label>
                     <textarea
@@ -125,6 +206,7 @@ const SubmitReview: React.FC = () => {
                         disabled={isSubmitting}
                     />
                 </div>
+
                 <button
                     type="submit"
                     disabled={isSubmitting}
