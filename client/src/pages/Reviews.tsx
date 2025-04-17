@@ -13,6 +13,12 @@ interface Review {
     purchaseDate: string;
     salesExperienceRating: number;
     createdAt: string;
+    pricePaid: number;
+    ownershipDuration: number;
+    pros: string[];
+    cons: string[];
+    fuelEfficiency: number;
+    variant: string;
 }
 
 const Reviews: React.FC = () => {

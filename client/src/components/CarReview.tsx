@@ -10,6 +10,12 @@ interface Review {
     purchaseDate: string;
     salesExperienceRating: number;
     createdAt: string;
+    pricePaid: number;
+    ownershipDuration: number;
+    pros: string[];
+    cons: string[];
+    fuelEfficiency: number;
+    variant: string;
 }
 
 interface CarReviewProps {
@@ -34,10 +40,27 @@ const CarReview: React.FC<CarReviewProps> = ({ review }) => {
         day: 'numeric'
     });
 
+    const formatDuration = (months: number): string => {
+        if (months === 0) return '0 months';
+        const years = Math.floor(months / 12);
+        const remainingMonths = months % 12;
+        
+        const yearText = years > 0 ? `${years} ${years === 1 ? 'year' : 'years'}` : '';
+        const monthText = remainingMonths > 0 ? `${remainingMonths} ${remainingMonths === 1 ? 'month' : 'months'}` : '';
+        
+        if (yearText && monthText) {
+            return `${yearText}, ${monthText}`;
+        }
+        return yearText || monthText;
+    };
+
     return (
         <div className="bg-white rounded-lg shadow-md p-6 transition-shadow hover:shadow-lg">
             <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-semibold text-gray-800">{review.carModel}</h3>
+                <div>
+                    <h3 className="text-xl font-semibold text-gray-800">{review.carModel}</h3>
+                    <p className="text-sm text-gray-600">Variant: {review.variant}</p>
+                </div>
                 <div className="flex items-center">
                     <div className="flex mr-2">
                         {renderStars(review.rating)}
@@ -46,7 +69,7 @@ const CarReview: React.FC<CarReviewProps> = ({ review }) => {
                 </div>
             </div>
             
-            <div className="mb-4">
+            <div className="mb-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 mb-4">
                     <div>
                         <span className="font-medium">Dealership:</span> {review.dealershipName}
@@ -58,6 +81,15 @@ const CarReview: React.FC<CarReviewProps> = ({ review }) => {
                         <span className="font-medium">Purchase Date:</span> {review.purchaseDate}
                     </div>
                     <div>
+                        <span className="font-medium">Price Paid:</span> ₹{review.pricePaid.toLocaleString()}
+                    </div>
+                    <div>
+                        <span className="font-medium">Ownership:</span> {formatDuration(review.ownershipDuration)}
+                    </div>
+                    <div>
+                        <span className="font-medium">Fuel Efficiency:</span> {review.fuelEfficiency} kmpl
+                    </div>
+                    <div>
                         <span className="font-medium">Sales Experience:</span>
                         <div className="flex items-center">
                             <div className="flex mr-1">
@@ -65,6 +97,27 @@ const CarReview: React.FC<CarReviewProps> = ({ review }) => {
                             </div>
                             <span className="text-sm">({review.salesExperienceRating}/5)</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div className="mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 className="font-medium text-gray-700 mb-2">Pros</h4>
+                        <ul className="list-disc list-inside text-gray-600 text-sm space-y-1">
+                            {review.pros.map((pro, index) => (
+                                <li key={index}>{pro}</li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 className="font-medium text-gray-700 mb-2">Cons</h4>
+                        <ul className="list-disc list-inside text-gray-600 text-sm space-y-1">
+                            {review.cons.map((con, index) => (
+                                <li key={index}>{con}</li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
             </div>
