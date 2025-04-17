@@ -25,11 +25,11 @@ const carSchema = new Schema<ICar>({
     city: { type: String, required: true },
     purchaseDate: { type: String, required: true },
     salesExperienceRating: { type: Number, required: true, min: 1, max: 5 },
-    pricePaid: { type: Number, required: true },
-    ownershipDuration: { type: Number, required: true },
-    pros: { type: [String], required: true },
-    cons: { type: [String], required: true },
-    fuelEfficiency: { type: Number, required: true },
+    pricePaid: { type: Number, required: true, min: 0, default: 0 },
+    ownershipDuration: { type: Number, required: true, min: 0, default: 0 },
+    pros: { type: [String], required: true, default: [] },
+    cons: { type: [String], required: true, default: [] },
+    fuelEfficiency: { type: Number, required: true, min: 0, default: 0 },
     variant: { type: String, required: true },
     createdAt: { type: Date, default: Date.now }
 });

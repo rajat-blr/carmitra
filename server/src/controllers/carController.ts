@@ -9,16 +9,25 @@ interface ReviewRequest {
     city: string;
     purchaseDate: string;
     salesExperienceRating: number;
+    pricePaid: number;
+    ownershipDuration: number;
+    pros: string[];
+    cons: string[];
+    fuelEfficiency: number;
+    variant: string;
 }
 
 class CarController {
     async getReviews(_req: Request, res: Response) {
         try {
+            console.log('Fetching reviews...');
             const reviews = await Car.find()
                 .sort({ createdAt: -1 })
-                .select('carModel rating comment dealershipName city purchaseDate salesExperienceRating createdAt')
+                .select('carModel rating comment dealershipName city purchaseDate salesExperienceRating createdAt pricePaid ownershipDuration pros cons fuelEfficiency variant')
+                .lean()
                 .exec();
             
+            console.log(`Found ${reviews.length} reviews`);
             res.status(200).json(reviews);
         } catch (error) {
             console.error('Error fetching reviews:', error);
@@ -32,6 +41,8 @@ class CarController {
 
     async submitReview(req: Request<{}, {}, ReviewRequest>, res: Response) {
         try {
+            console.log('Raw request body:', req.body);
+            
             const { 
                 carModel, 
                 rating, 
@@ -39,8 +50,31 @@ class CarController {
                 dealershipName, 
                 city, 
                 purchaseDate, 
-                salesExperienceRating 
+                salesExperienceRating,
+                pricePaid,
+                ownershipDuration,
+                pros,
+                cons,
+                fuelEfficiency,
+                variant
             } = req.body;
+
+            // Log each field for debugging
+            console.log('Parsed fields:', {
+                carModel,
+                rating,
+                comment,
+                dealershipName,
+                city,
+                purchaseDate,
+                salesExperienceRating,
+                pricePaid,
+                ownershipDuration,
+                pros,
+                cons,
+                fuelEfficiency,
+                variant
+            });
 
             // Input validation
             if (!carModel?.trim()) {
@@ -71,6 +105,13 @@ class CarController {
                 });
             }
 
+            if (!variant?.trim()) {
+                return res.status(400).json({ 
+                    success: false,
+                    message: 'Variant is required' 
+                });
+            }
+
             if (!purchaseDate?.trim() || !/^\d{2}\/\d{4}$/.test(purchaseDate)) {
                 return res.status(400).json({ 
                     success: false,
@@ -94,8 +135,41 @@ class CarController {
                 });
             }
 
-            // Create new review in MongoDB with all required fields
-            const newReview = await Car.create({
+            if (!Array.isArray(pros) || pros.some(pro => typeof pro !== 'string')) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Pros must be an array of strings'
+                });
+            }
+
+            if (!Array.isArray(cons) || cons.some(con => typeof con !== 'string')) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Cons must be an array of strings'
+                });
+            }
+
+            const numericFuelEfficiency = Number(fuelEfficiency);
+            if (isNaN(numericFuelEfficiency) || numericFuelEfficiency < 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Fuel efficiency must be a positive number'
+                });
+            }
+
+            const numericPricePaid = Number(pricePaid);
+            if (isNaN(numericPricePaid) || numericPricePaid < 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Price paid must be a positive number'
+                });
+            }
+
+            // Clean and prepare the data
+            const sanitizedPros = Array.isArray(pros) ? pros.filter(p => p.trim()) : [];
+            const sanitizedCons = Array.isArray(cons) ? cons.filter(c => c.trim()) : [];
+            
+            const reviewData = {
                 carModel: carModel.trim(),
                 rating: numericRating,
                 comment: comment.trim(),
@@ -103,14 +177,20 @@ class CarController {
                 city: city.trim(),
                 purchaseDate: purchaseDate.trim(),
                 salesExperienceRating: numericSalesRating,
-                // Set default values for other required fields
-                pricePaid: 0,
-                ownershipDuration: 0,
-                pros: [],
-                cons: [],
-                fuelEfficiency: 0,
-                variant: 'base'
-            });
+                pricePaid: numericPricePaid,
+                ownershipDuration: Number(ownershipDuration),
+                pros: sanitizedPros,
+                cons: sanitizedCons,
+                fuelEfficiency: numericFuelEfficiency,
+                variant: variant.trim()
+            };
+
+            console.log('Sanitized review data:', reviewData);
+
+            // Create new review in MongoDB
+            const newReview = await Car.create(reviewData);
+
+            console.log('Created review in MongoDB:', newReview.toObject());
 
             res.status(201).json({
                 success: true,

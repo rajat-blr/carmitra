@@ -8,10 +8,18 @@ import setDealershipRoutes from './routes/dealershipRoutes';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// MongoDB Connection
-mongoose.connect('mongodb://localhost:27017/carmitra')
+// MongoDB Connection with proper options
+mongoose.connect('mongodb://localhost:27017/carmitra', {
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+})
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
+
+// Enable MongoDB debugging in development
+if (process.env.NODE_ENV === 'development') {
+    mongoose.set('debug', true);
+}
 
 // Middleware
 app.use(cors());
