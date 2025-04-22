@@ -14,6 +14,12 @@ const Navbar: React.FC = () => {
                 <Link to="/" className="text-xl font-bold">CarMitra</Link>
                 <div className="space-x-4">
                     <Link 
+                        to="/" 
+                        className={`px-3 py-2 rounded hover:bg-blue-700 transition-colors ${isActive('/')}`}
+                    >
+                        Home
+                    </Link>
+                    <Link 
                         to="/reviews" 
                         className={`px-3 py-2 rounded hover:bg-blue-700 transition-colors ${isActive('/reviews')}`}
                     >
