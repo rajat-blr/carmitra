@@ -113,8 +113,8 @@ const Home: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-            {/* Hero Section - Refined */}
-            <div className="relative h-[700px] overflow-hidden">
+            {/* Hero Section - Updated for fixed navbar */}
+            <div className="relative h-screen overflow-hidden">
                 <div className="absolute inset-0 bg-black/40 z-10"></div>
                 <img 
                     src="/images/thar.jpg" 
@@ -122,8 +122,8 @@ const Home: React.FC = () => {
                     className="absolute w-full h-full object-cover object-center" 
                 />
                 <div className="relative z-20 max-w-7xl mx-auto px-4 h-full flex flex-col justify-center items-start">
-                    <div className="max-w-2xl">
-                        <h1 className="text-6xl font-bold mb-2 text-white leading-tight">
+                    <div className="max-w-2xl pt-16 md:pt-20"> {/* Added padding top to compensate for fixed navbar */}
+                        <h1 className="text-5xl md:text-6xl font-bold mb-2 text-white leading-tight">
                             Find Your <span className="text-yellow-400">Perfect</span> Car
                         </h1>
                         <div className="w-20 h-1 bg-yellow-400 mb-6"></div>

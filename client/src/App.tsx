@@ -11,12 +11,35 @@ const App: React.FC = () => {
     <Router>
       <div className="min-h-screen bg-gray-50">
         <Navbar />
-        <main className="container mx-auto px-4 py-8">
+        <main>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/reviews" element={<Reviews />} />
-            <Route path="/dealerships" element={<Dealerships />} />
-            <Route path="/submit-review" element={<SubmitReview />} />
+            <Route path="/reviews" element={
+              <>
+                <div className="h-16 md:h-20 bg-gradient-to-r from-gray-900 to-indigo-900"></div>
+                <div className="container mx-auto px-4 py-8">
+                  <Reviews />
+                </div>
+              </>
+            } />
+            <Route path="/dealerships" element={
+              <>
+                <div className="h-16 md:h-20 bg-gradient-to-r from-gray-900 to-indigo-900"></div>
+                <div className="container mx-auto px-4 py-8">
+                  <Dealerships />
+                </div>
+              </>
+            } />
+            <Route path="/submit-review" element={
+              <>
+                <div className="h-16 md:h-20 bg-gradient-to-r from-gray-900 to-indigo-900"></div>
+                <div className="container mx-auto px-4 py-8">
+                  <div className="max-w-5xl mx-auto">
+                    <SubmitReview />
+                  </div>
+                </div>
+              </>
+            } />
           </Routes>
         </main>
       </div>
