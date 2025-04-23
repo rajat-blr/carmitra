@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import CarReview from '../components/CarReview';
 import { Link, useLocation } from 'react-router-dom';
+import ReviewCard from '../components/ReviewCard';
 
 interface Review {
     _id?: string;
@@ -155,9 +155,9 @@ const Reviews: React.FC = () => {
                     )}
                 </div>
             ) : (
-                <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {filteredReviews.map((review) => (
-                        <CarReview key={review._id} review={review} />
+                        <ReviewCard key={review._id} review={review} />
                     ))}
                 </div>
             )}

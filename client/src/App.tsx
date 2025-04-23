@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Reviews from './pages/Reviews';
 import Dealerships from './pages/Dealerships';
 import SubmitReview from './pages/SubmitReview';
+import ReviewDetail from './pages/ReviewDetail';
 
 const App: React.FC = () => {
   return (
@@ -19,6 +20,14 @@ const App: React.FC = () => {
                 <div className="h-16 md:h-20 bg-gradient-to-r from-gray-900 to-indigo-900"></div>
                 <div className="container mx-auto px-4 py-8">
                   <Reviews />
+                </div>
+              </>
+            } />
+            <Route path="/reviews/:id" element={
+              <>
+                <div className="h-16 md:h-20 bg-gradient-to-r from-gray-900 to-indigo-900"></div>
+                <div className="container mx-auto px-4 py-8">
+                  <ReviewDetail />
                 </div>
               </>
             } />

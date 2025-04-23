@@ -39,6 +39,42 @@ class CarController {
         }
     }
 
+    async getReviewById(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            console.log(`Fetching review with ID: ${id}`);
+            
+            if (!id) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Review ID is required'
+                });
+            }
+
+            const review = await Car.findById(id)
+                .select('carModel rating comment dealershipName city purchaseDate salesExperienceRating createdAt pricePaid ownershipDuration pros cons fuelEfficiency variant')
+                .lean()
+                .exec();
+            
+            if (!review) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Review not found'
+                });
+            }
+            
+            console.log(`Found review for ${review.carModel}`);
+            res.status(200).json(review);
+        } catch (error) {
+            console.error('Error fetching review by ID:', error);
+            res.status(500).json({ 
+                success: false,
+                message: 'Error fetching review',
+                error: process.env.NODE_ENV === 'development' ? error : undefined
+            });
+        }
+    }
+
     async submitReview(req: Request<{}, {}, ReviewRequest>, res: Response) {
         try {
             console.log('Raw request body:', req.body);
