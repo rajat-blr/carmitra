@@ -11,12 +11,12 @@ const GuidesSection: React.FC = () => {
     {
       id: 1,
       title: 'Petrol vs Diesel vs CNG: Which Fuel Type is Right for You?',
-      image: 'https://imgd.aeplcdn.com/664x374/n/cw/ec/132513/scorpio-n-exterior-right-front-three-quarter-75.jpeg'
+      image: '/images/guides/car1.jpg'
     },
     {
       id: 2,
       title: 'Top 10 Budget-Friendly Cars Under ₹10 Lakh in 2024',
-      image: 'https://imgd.aeplcdn.com/664x374/n/cw/ec/142865/punch-ev-exterior-right-front-three-quarter-2.jpeg'
+      image: '/images/guides/car2.jpg'
     }
   ];
 

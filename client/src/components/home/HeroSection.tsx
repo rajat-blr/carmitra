@@ -101,12 +101,15 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
       />
       <div className="relative z-20 max-w-7xl mx-auto px-4 h-full flex flex-col justify-center items-start">
         <div className="max-w-2xl pt-16 md:pt-20">
+          <span className="inline-block px-4 py-1 rounded-full bg-blue-600 text-white text-sm font-medium mb-4">
+            India's First AI-Powered Car Platform
+          </span>
           <h1 className="text-5xl md:text-6xl font-bold mb-2 text-white leading-tight">
-            Find Your <span className="text-yellow-400">Perfect</span> Car
+            Making Car Buying <span className="text-yellow-400">Smarter</span> With AI
           </h1>
           <div className="w-20 h-1 bg-yellow-400 mb-6"></div>
           <p className="text-xl mb-12 text-gray-100">
-            Real reviews. Honest ratings. Expert opinions from car enthusiasts across India.
+            Our AI analyzes thousands of reviews to help you find the perfect car that matches your needs and budget.
           </p>
           
           <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4 w-full bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20 shadow-xl">
@@ -137,7 +140,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
               type="submit"
               className="md:w-1/3 bg-yellow-500 text-gray-900 p-4 rounded-lg hover:bg-yellow-400 transition-all font-semibold shadow-lg transform hover:scale-105"
             >
-              Search Reviews
+              AI-Powered Search
             </button>
           </form>
         </div>
@@ -155,7 +158,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
         </div>
         <div className="text-center">
           <p className="text-4xl font-bold text-white">10+</p>
-          <p className="text-sm text-gray-200">Brands</p>
+          <p className="text-sm text-gray-200">AI Insights</p>
         </div>
       </div>
     </div>

@@ -9,12 +9,12 @@ import NewsletterSection from '../components/home/NewsletterSection';
 
 const Home: React.FC = () => {
   const handleSearch = (brand: string, model: string) => {
-    // TODO: Implement search functionality
+        // TODO: Implement search functionality
     console.log('Searching for:', brand, model);
-  };
+    };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    return (
+        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <HeroSection onSearch={handleSearch} />
       <BrandSection />
       <ReviewSection />
@@ -22,8 +22,8 @@ const Home: React.FC = () => {
       <GuidesSection />
       <TestimonialSection />
       <NewsletterSection />
-    </div>
-  );
+        </div>
+    );
 };
 
 export default Home;
