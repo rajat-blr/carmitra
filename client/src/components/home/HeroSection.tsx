@@ -101,7 +101,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
       />
       <div className="relative z-20 max-w-7xl mx-auto px-4 h-full flex flex-col justify-center items-start">
         <div className="max-w-2xl pt-16 md:pt-20">
-          <span className="inline-block px-4 py-1 rounded-full bg-blue-600 text-white text-sm font-medium mb-4">
+          <span className="inline-block px-4 py-1 rounded-full bg-amber-600 text-white text-sm font-medium mb-4">
             India's First AI-Powered Car Platform
           </span>
           <h1 className="text-5xl md:text-6xl font-bold mb-2 text-white leading-tight">

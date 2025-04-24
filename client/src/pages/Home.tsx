@@ -14,7 +14,7 @@ const Home: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+        <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
       <HeroSection onSearch={handleSearch} />
       <BrandSection />
       <ReviewSection />
