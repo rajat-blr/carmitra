@@ -23,7 +23,7 @@ const Navbar: React.FC = () => {
         <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-md text-gray-800' : 'bg-transparent text-white'}`}>
             <div className="container mx-auto px-4">
                 <div className="flex justify-between items-center h-16 md:h-20">
-                    <Link to="/" className="font-bold text-2xl flex items-center gap-2">
+                    <Link to="/" className="font-bold text-2xl flex items-center gap-0">
                         <span className={`text-primary-600 transition-colors duration-300`}>Car</span>
                         <span className={`${isScrolled ? 'text-gray-800' : 'text-white'} transition-colors duration-300`}>Mitra</span>
                     </Link>
