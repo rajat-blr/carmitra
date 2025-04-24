@@ -4,6 +4,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import setCarRoutes from './routes/carRoutes';
 import setDealershipRoutes from './routes/dealershipRoutes';
+import setGuideRoutes from './routes/guideRoutes';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -29,6 +30,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Routes
 setCarRoutes(app);
 setDealershipRoutes(app);
+setGuideRoutes(app);
 
 // Health check endpoint
 app.get('/health', (req: Request, res: Response) => {

@@ -6,6 +6,8 @@ import Reviews from './pages/Reviews';
 import Dealerships from './pages/Dealerships';
 import SubmitReview from './pages/SubmitReview';
 import ReviewDetail from './pages/ReviewDetail';
+import Guides from './pages/Guides';
+import GuideDetail from './pages/GuideDetail';
 
 const App: React.FC = () => {
   return (
@@ -46,6 +48,22 @@ const App: React.FC = () => {
                   <div className="max-w-5xl mx-auto">
                     <SubmitReview />
                   </div>
+                </div>
+              </>
+            } />
+            <Route path="/tips-and-guides" element={
+              <>
+                <div className="h-16 md:h-20 bg-gradient-to-r from-gray-900 to-indigo-900"></div>
+                <div className="container mx-auto px-4 py-8">
+                  <Guides />
+                </div>
+              </>
+            } />
+            <Route path="/tips-and-guides/:uuid" element={
+              <>
+                <div className="h-16 md:h-20 bg-gradient-to-r from-gray-900 to-indigo-900"></div>
+                <div className="container mx-auto px-4 py-8">
+                  <GuideDetail />
                 </div>
               </>
             } />

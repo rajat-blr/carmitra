@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { Link, useLocation } from 'react-router-dom';
 import ReviewCard from '../components/ReviewCard';
@@ -24,8 +24,9 @@ interface Review {
 const Reviews: React.FC = () => {
     const [reviews, setReviews] = useState<Review[]>([]);
     const [loading, setLoading] = useState(true);
+    const [searching, setSearching] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [filterQuery, setFilterQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
     const location = useLocation();
 
     const fetchReviews = async () => {
@@ -42,19 +43,39 @@ const Reviews: React.FC = () => {
         }
     };
 
+    const searchReviews = useCallback(async (query: string) => {
+        if (!query.trim()) {
+            fetchReviews();
+            return;
+        }
+        
+        try {
+            setSearching(true);
+            const response = await axios.get<Review[]>(`/api/cars/search?query=${encodeURIComponent(query)}`);
+            setReviews(response.data);
+            setError(null);
+        } catch (err) {
+            setError('Failed to search reviews. Please try again later.');
+            console.error('Error searching reviews:', err);
+        } finally {
+            setSearching(false);
+        }
+    }, []);
+    
+    // Debounce search function
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            searchReviews(searchQuery);
+        }, 500); // 500ms debounce time
+        
+        return () => clearTimeout(timer);
+    }, [searchQuery, searchReviews]);
+    
     useEffect(() => {
         fetchReviews();
     }, [location.key]);
 
-    const filteredReviews = filterQuery 
-        ? reviews.filter(review => 
-            review.carModel.toLowerCase().includes(filterQuery.toLowerCase()) ||
-            review.dealershipName.toLowerCase().includes(filterQuery.toLowerCase()) ||
-            review.city.toLowerCase().includes(filterQuery.toLowerCase())
-          )
-        : reviews;
-
-    if (loading) {
+    if (loading && !searching) {
         return (
             <div className="flex justify-center items-center min-h-[60vh]">
                 <div className="flex flex-col items-center">
@@ -113,13 +134,18 @@ const Reviews: React.FC = () => {
                         type="text"
                         placeholder="Search by car model, dealership, or city..."
                         className="pl-10 pr-4 py-3 w-full rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-all"
-                        value={filterQuery}
-                        onChange={(e) => setFilterQuery(e.target.value)}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                     />
+                    {searching && (
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-primary-600"></div>
+                        </div>
+                    )}
                 </div>
             </div>
             
-            {filteredReviews.length === 0 ? (
+            {reviews.length === 0 ? (
                 <div className="bg-white rounded-2xl shadow-md p-10 text-center">
                     <img 
                         src="/images/empty-reviews.svg" 
@@ -129,11 +155,11 @@ const Reviews: React.FC = () => {
                             e.currentTarget.src = "https://img.icons8.com/clouds/100/000000/car.png";
                         }}
                     />
-                    {filterQuery ? (
+                    {searchQuery ? (
                         <>
                             <p className="text-gray-600 mb-4 text-lg">No reviews matching your search criteria.</p>
                             <button 
-                                onClick={() => setFilterQuery('')}
+                                onClick={() => setSearchQuery('')}
                                 className="bg-gray-200 text-gray-800 px-6 py-3 rounded-full hover:bg-gray-300 transition-all"
                             >
                                 Clear Search
@@ -156,7 +182,7 @@ const Reviews: React.FC = () => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {filteredReviews.map((review) => (
+                    {reviews.map((review) => (
                         <ReviewCard key={review._id} review={review} />
                     ))}
                 </div>

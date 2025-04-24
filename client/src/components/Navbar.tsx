@@ -16,7 +16,7 @@ const Navbar: React.FC = () => {
     }, []);
 
     const isActive = (path: string) => {
-        return location.pathname === path;
+        return location.pathname === path || location.pathname.startsWith(`${path}/`);
     };
 
     return (
@@ -33,7 +33,7 @@ const Navbar: React.FC = () => {
                         <Link 
                             to="/" 
                             className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 
-                                ${isActive('/') 
+                                ${isActive('/') && !location.pathname.startsWith('/tips-and-guides')
                                     ? `${isScrolled ? 'bg-primary-600 text-white' : 'bg-white/20 text-white'}` 
                                     : `${isScrolled ? 'hover:bg-gray-100' : 'hover:bg-white/10'}`
                                 }`}
@@ -59,6 +59,16 @@ const Navbar: React.FC = () => {
                                 }`}
                         >
                             Dealerships
+                        </Link>
+                        <Link 
+                            to="/tips-and-guides" 
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 
+                                ${isActive('/tips-and-guides') 
+                                    ? `${isScrolled ? 'bg-primary-600 text-white' : 'bg-white/20 text-white'}` 
+                                    : `${isScrolled ? 'hover:bg-gray-100' : 'hover:bg-white/10'}`
+                                }`}
+                        >
+                            Tips & Guides
                         </Link>
                         <Link 
                             to="/submit-review" 
@@ -96,7 +106,7 @@ const Navbar: React.FC = () => {
                     <Link 
                         to="/" 
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className={`px-4 py-3 rounded-lg text-sm font-medium ${isActive('/') ? 'bg-primary-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50'}`}
+                        className={`px-4 py-3 rounded-lg text-sm font-medium ${isActive('/') && !location.pathname.startsWith('/tips-and-guides') ? 'bg-primary-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50'}`}
                     >
                         Home
                     </Link>
@@ -113,6 +123,13 @@ const Navbar: React.FC = () => {
                         className={`px-4 py-3 rounded-lg text-sm font-medium ${isActive('/dealerships') ? 'bg-primary-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50'}`}
                     >
                         Dealerships
+                    </Link>
+                    <Link 
+                        to="/tips-and-guides" 
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={`px-4 py-3 rounded-lg text-sm font-medium ${isActive('/tips-and-guides') ? 'bg-primary-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50'}`}
+                    >
+                        Tips & Guides
                     </Link>
                     <Link 
                         to="/submit-review" 

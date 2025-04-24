@@ -242,6 +242,44 @@ class CarController {
             });
         }
     }
+
+    async searchReviews(req: Request, res: Response) {
+        try {
+            const { query } = req.query;
+            
+            if (!query) {
+                return this.getReviews(req, res);
+            }
+            
+            console.log(`Searching reviews with query: ${query}`);
+            
+            const searchPattern = new RegExp(String(query), 'i');
+            
+            const reviews = await Car.find({
+                $or: [
+                    { carModel: searchPattern },
+                    { dealershipName: searchPattern },
+                    { city: searchPattern },
+                    { variant: searchPattern },
+                    { comment: searchPattern }
+                ]
+            })
+            .sort({ createdAt: -1 })
+            .select('carModel rating comment dealershipName city purchaseDate salesExperienceRating createdAt pricePaid ownershipDuration pros cons fuelEfficiency variant')
+            .lean()
+            .exec();
+            
+            console.log(`Found ${reviews.length} reviews matching query: ${query}`);
+            res.status(200).json(reviews);
+        } catch (error) {
+            console.error('Error searching reviews:', error);
+            res.status(500).json({ 
+                success: false,
+                message: 'Error searching reviews',
+                error: process.env.NODE_ENV === 'development' ? error : undefined
+            });
+        }
+    }
 }
 
 export = new CarController();
